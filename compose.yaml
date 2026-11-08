@@ -1,0 +1,39 @@
+services:
+  monitor:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./config:/app/config:ro
+      - monitor-data:/app/data
+    environment:
+      MONITOR_CONFIG: /app/config/services.yml
+      MONITOR_DB: /app/data/monitor.db
+    depends_on:
+      demo:
+        condition: service_healthy
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+  demo:
+    build: .
+    command: [python, -m, http.server, "9000", --directory, /app/demo]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9000/', timeout=3)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+volumes:
+  monitor-data:

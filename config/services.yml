@@ -1,0 +1,21 @@
+interval_seconds: 30
+retention_days: 7
+services:
+  - id: demo-http
+    name: Página de demonstração
+    type: http
+    url: http://demo:9000/
+    expected_status: [200]
+    timeout_seconds: 3
+  - id: demo-tcp
+    name: Porta do servidor web
+    type: tcp
+    host: demo
+    port: 9000
+    timeout_seconds: 3
+  - id: demo-down
+    name: Porta fechada de propósito
+    type: tcp
+    host: demo
+    port: 9001
+    timeout_seconds: 3

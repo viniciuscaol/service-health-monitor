@@ -1,0 +1,27 @@
+interval_seconds: 30
+retention_days: 7
+services:
+  - id: demo-http
+    name: Página de demonstração
+    type: http
+    url: http://127.0.0.1:9000/
+    expected_status: [200]
+  - id: demo-tcp
+    name: Porta do servidor web
+    type: tcp
+    host: 127.0.0.1
+    port: 9000
+  - id: demo-down
+    name: Porta fechada de propósito
+    type: tcp
+    host: 127.0.0.1
+    port: 9001
+# Para verificar um certificado, acrescente um serviço autorizado:
+#  - id: meu-certificado
+#    name: Certificado do meu domínio
+#    type: tls
+#    host: seu-dominio.example
+#    port: 443
+#    warn_days: 30
+#    timeout_seconds: 5
+#    ca_file: minha-ca.pem  # opcional; caminho relativo a este YAML
