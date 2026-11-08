@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101819">
+  <title>Service Health Monitor</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<a class="skip" href="#services">Pular para os serviços</a>
+<div class="shell">
+  <header><a class="brand" href="/" aria-label="Service Health Monitor, início"><span class="mark" aria-hidden="true">sh<span>m</span></span><span>service health<br><b>monitor</b></span></a><span class="label">VISIBILIDADE OPERACIONAL</span><span id="connection" class="connection">Conectando ao painel</span></header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">REDES / APLICAÇÕES / CERTIFICADOS</p><h1>O que está funcionando.<br><span>E o que precisa de atenção.</span></h1><p class="description">Acompanhe seus serviços em um só lugar. Disponibilidade observada, tempo de resposta e validade de certificados.</p></div><div class="round"><span class="tiny">ÚLTIMA VERIFICAÇÃO</span><strong id="last-check">Aguardando</strong><span id="interval" class="muted">Carregando configuração</span><button id="refresh" type="button">Atualizar painel <span aria-hidden="true">↻</span></button></div></section>
+    <p id="notice" role="status" aria-live="polite" class="notice" hidden></p>
+    <section class="metrics" aria-label="Resumo dos serviços"><div><span>Total de serviços</span><strong id="count-total">—</strong><small>Configurados para verificação</small></div><div><span><i class="dot up"></i>Disponíveis</span><strong id="count-up">—</strong><small>Último check aprovado</small></div><div><span><i class="dot warning"></i>Atenção</span><strong id="count-warning">—</strong><small>Certificado perto de vencer</small></div><div><span><i class="dot down"></i>Indisponíveis</span><strong id="count-down">—</strong><small>Falha no último check</small></div></section>
+    <section id="services" class="service-section"><div class="section-head"><div><p class="eyebrow">01 / ESTADO ATUAL</p><h2>Seus serviços</h2></div><p>Clique em um serviço para consultar o histórico.</p></div><div class="table-wrap"><table><caption class="sr-only">Resultado mais recente de cada serviço monitorado</caption><thead><tr><th scope="col">Serviço</th><th scope="col">Estado</th><th scope="col">Resposta</th><th scope="col">Certificado</th><th scope="col">Verificado em</th></tr></thead><tbody id="service-rows"><tr><td colspan="5" class="empty">Buscando os serviços configurados…</td></tr></tbody></table></div></section>
+    <section class="history-section" aria-labelledby="history-title"><div class="section-head"><div><p class="eyebrow">02 / HISTÓRICO DE VERIFICAÇÕES</p><h2 id="history-title">Selecione um serviço</h2></div><span class="tiny">ÚLTIMOS 50 RESULTADOS</span></div><div id="timeline" class="timeline" aria-label="Sequência de resultados"></div><p id="history-description" class="muted">O histórico aparece após a primeira rodada de verificações.</p><div class="table-wrap"><table><caption class="sr-only">Verificações recentes do serviço selecionado</caption><thead><tr><th scope="col">Data e hora</th><th scope="col">Estado</th><th scope="col">Resposta</th><th scope="col">Detalhe</th></tr></thead><tbody id="history-rows"><tr><td colspan="4" class="empty">Nenhuma verificação carregada.</td></tr></tbody></table></div></section>
+  </main>
+  <footer><span>Service Health Monitor <b>/ 0.1</b></span><span>Checks pontuais · Horários no fuso do navegador</span><a href="/docs">API e documentação ↗</a></footer>
+</div>
+<script src="/static/app.js" defer></script>
+</body></html>
