@@ -1,7 +1,7 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const labels = {up: 'Disponível', warning: 'Atenção', down: 'Indisponível', pending: 'Sem dados'};
-let services = [], selected = null, busy = false;
+let services = [], selected = null, busy = false, renderedSignature = '';
 const date = value => new Date(value * 1000).toLocaleString('pt-BR');
 function node(tag, text, className) { const el = document.createElement(tag); if (text !== undefined) el.textContent = text; if (className) el.className = className; return el; }
 function badge(status) { return node('span', labels[status] || labels.pending, 'badge ' + status); }
@@ -13,7 +13,7 @@ function history() {
   if (!service || !service.history.length) { $('history-description').textContent = 'Aguardando a primeira verificação deste serviço.'; empty(rows, 4, 'Ainda não há resultados.'); return; }
   const items = service.history;
   [...items].reverse().forEach(item => { const bar = node('span', '', item.status); bar.title = `${date(item.checked_at)} · ${labels[item.status]}`; timeline.append(bar); });
-  $('history-description').textContent = `${items.length} verificações exibidas · sequência da mais antiga para a mais recente. A tabela mostra as 10 últimas.`;
+  $('history-description').textContent = `${items.length} ${items.length===1 ? 'verificação exibida' : 'verificações exibidas'} · sequência da mais antiga para a mais recente. A tabela mostra as 10 últimas.`;
   items.slice(0, 10).forEach(item => { const row = node('tr'); const status = node('td'); status.append(badge(item.status)); row.append(node('td', date(item.checked_at)), status, node('td', `${item.latency_ms.toFixed(1)} ms`, 'timing'), node('td', item.message)); rows.append(row); });
 }
 function render(data) {
@@ -32,10 +32,14 @@ function render(data) {
   $('connection').className = 'connection' + (data.collector_running ? '' : ' error');
   const warning = !data.collector_running ? 'A coleta foi interrompida. Os resultados abaixo podem estar desatualizados. Verifique os logs da aplicação.' : stale ? 'Há resultados antigos. Os estados abaixo representam a última verificação registrada.' : pending ? `${pending} serviço(s) aguardando a primeira verificação.` : '';
   $('notice').hidden = !warning; $('notice').textContent = warning;
+  const signature = JSON.stringify([services, selected]);
+  if(signature === renderedSignature) return;
+  renderedSignature = signature;
+  const focusedService = document.activeElement?.dataset.serviceId;
   const rows = $('service-rows'); rows.replaceChildren();
   services.forEach(s => {
     const r = s.latest, row = node('tr'), name = node('td'), button = node('button', s.name, 'service-button');
-    button.type='button'; button.setAttribute('aria-pressed', String(selected === s.id));
+    button.type='button'; button.dataset.serviceId=s.id; button.setAttribute('aria-pressed', String(selected === s.id));
     button.addEventListener('click', () => {selected=s.id; render(data);});
     name.append(button, node('span', s.type.toUpperCase(), 'service-type'));
     const status=node('td'); status.append(badge(r?.status || 'pending'));
@@ -43,6 +47,7 @@ function render(data) {
     row.append(name,status,node('td',r ? `${r.latency_ms.toFixed(1)} ms` : '—','timing'),node('td',cert),node('td',r ? date(r.checked_at) : '—'));
     rows.append(row);
   });
+  if(focusedService) [...rows.querySelectorAll('.service-button')].find(b => b.dataset.serviceId===focusedService)?.focus({preventScroll:true});
   history();
 }
 async function refresh() {
